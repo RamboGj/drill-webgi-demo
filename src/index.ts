@@ -1,77 +1,104 @@
 import {
     ViewerApp,
-    AssetManagerPlugin,
-    GBufferPlugin,
-    timeout,
-    ProgressivePlugin,
-    TonemapPlugin,
-    SSRPlugin,
-    SSAOPlugin,
-    DiamondPlugin,
-    FrameFadePlugin,
-    GLTFAnimationPlugin,
-    GroundPlugin,
-    BloomPlugin,
-    TemporalAAPlugin,
-    AnisotropyPlugin,
-    GammaCorrectionPlugin,
-
     addBasePlugins,
-    ITexture, TweakpaneUiPlugin, AssetManagerBasicPopupPlugin, CanvasSnipperPlugin,
-
-    IViewerPlugin, FileTransferPlugin,
-
-    // Color, // Import THREE.js internals
-    // Texture, // Import THREE.js internals
+    AssetManagerBasicPopupPlugin, 
+    CanvasSnipperPlugin,
+    FileTransferPlugin,
 } from "webgi";
-import "./styles.css";
+import "./styles.css"
+import gsap from 'gsap'
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+gsap.registerPlugin(ScrollTrigger)
 
 async function setupViewer(){
-
-    // Initialize the viewer
     const viewer = new ViewerApp({
         canvas: document.getElementById('webgi-canvas') as HTMLCanvasElement,
+        useRgbm: false
     })
 
-    // Add plugins individually.
-    // await viewer.addPlugin(GBufferPlugin)
-    // await viewer.addPlugin(new ProgressivePlugin(32))
-    // await viewer.addPlugin(new TonemapPlugin(!viewer.useRgbm))
-    // await viewer.addPlugin(GammaCorrectionPlugin)
-    // await viewer.addPlugin(SSRPlugin)
-    // await viewer.addPlugin(SSAOPlugin)
-    // await viewer.addPlugin(DiamondPlugin)
-    // await viewer.addPlugin(FrameFadePlugin)
-    // await viewer.addPlugin(GLTFAnimationPlugin)
-    // await viewer.addPlugin(GroundPlugin)
-    // await viewer.addPlugin(BloomPlugin)
-    // await viewer.addPlugin(TemporalAAPlugin)
-    // await viewer.addPlugin(AnisotropyPlugin)
-    // and many more...
-
-    // or use this to add all main ones at once.
     await addBasePlugins(viewer) // check the source: https://codepen.io/repalash/pen/JjLxGmy for the list of plugins added.
-
-    // Add a popup(in HTML) with download progress when any asset is downloading.
     await viewer.addPlugin(AssetManagerBasicPopupPlugin)
+    const camera = viewer.scene.activeCamera
+    const position = camera.position
+    const target = camera.target
 
-    // Required for downloading files from the UI
     await viewer.addPlugin(FileTransferPlugin)
-
-    // Add more plugins not available in base, like CanvasSnipperPlugin which has helpers to download an image of the canvas.
     await viewer.addPlugin(CanvasSnipperPlugin)
 
-    // Import and add a GLB file.
-    await viewer.load("./assets/classic-watch.glb")
+    await viewer.load("./assets/drill_model.glb")
 
-    // Load an environment map if not set in the glb file
-    // await viewer.setEnvironmentMap("./assets/environment.hdr");
+    function setupScrollAnimation() {
+        const tl = gsap.timeline()
+    
+        // first animation
+    
+        tl
+        .to(position, { x: 2, y: -3, z: -4.05, 
+            onUpdate, 
+            immediateRender: false,
+            scrollTrigger: { 
+                trigger: '.second',
+                start: 'top bottom',
+                end: 'top top',
+                scrub: true,
+                markers: true
+            } 
+        })
+        .to(target, { x: -0.1, y: 0, z: 0,
+            onUpdate, 
+            immediateRender: false,
+            scrollTrigger: { 
+                trigger: '.second',
+                start: 'top bottom',
+                end: 'top top',
+                scrub: true,
+                markers: true
+            } 
+        })
 
-    // Add some UI for tweak and testing.
-    const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
-    // Add plugins to the UI to see their settings.
-    uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
+        .to(position, { x: -2.98, y: -0.16, z: 1.41, 
+            immediateRender: false,
+            onUpdate, 
+            scrollTrigger: { 
+                trigger: '.third',
+                start: 'top bottom',
+                end: 'top top',
+                scrub: true,
+                markers: true
+            } 
+        })
+        .to(target, { x: -0.42, y: 1.23, z: -0.27,
+            immediateRender: false,
+            onUpdate, 
+            scrollTrigger: { 
+                trigger: '.third',
+                start: 'top bottom',
+                end: 'top top',
+                scrub: true,
+                markers: true
+            } 
+        })
+    }
 
+    setupScrollAnimation()
+
+
+    // webgi update
+    let needsUpdate = true
+    function onUpdate() {
+        needsUpdate = true
+        viewer.renderer.resetShadows()
+    }
+
+    viewer.addEventListener('preFrame', () => {
+        if (needsUpdate) {
+            camera.positionUpdated(true)
+            camera.targetUpdated(true)
+            needsUpdate = false
+        }
+    })
 }
+
 
 setupViewer()

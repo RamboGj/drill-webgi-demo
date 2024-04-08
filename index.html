@@ -2,12 +2,68 @@
 <html lang="en">
 
 <head>
-	<title>WebGi starter</title>
+	<title>ThreeTools</title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
 </head>
 
 <body>
+	<header class="header">
+		<nav class="navContainer">
+			<img src="./assets/logo.png" alt="ThreeTools Logo" />
+
+			<button class="navbarButton">
+				BUY NOW
+			</button>
+		</nav>
+	</header>
+
+	<section class="hero">
+		<div class="heroContent">
+			<h1>
+				Perfect Drill
+			</h1>
+			<p>
+				Variable speed for ultimate fingertip control for all drilling applications. 
+				Reverse brush system for full torque and power in forward and reverse, lock-on button for continuous use.
+			</p>
+			<button class="buttonSecondary">
+				Know more
+			</button>
+		</div>
+	</section>
+
+	<section class="second">
+		<div class="secondContent">
+			<h2>
+				Comfortable to use
+			</h2>
+			<p>
+				Ergonomic reversible hammer drill design with optimal grip positions, light weight and insulated shock proof plastic body, 
+				easy to change bits
+			</p>
+		</div>
+		<div class="customBg" ></div>
+	</section>
+
+	<section class="third">
+		<div class="thirdContent">
+			<h2>
+				Wood and metal
+			</h2>
+			<p>
+				Supports wood and metal drilling. Metal drill bits are not part of the included components with the product. Metal drill bits can be procured by the customer and can be used for drilling into metal surfaces
+			</p>
+			<button class="buttonSecondary">
+				Custom
+			</button>
+		</div>
+	</section>
+
 	<div id="webgi-canvas-container">
 		<canvas id="webgi-canvas"></canvas>
 	</div>
